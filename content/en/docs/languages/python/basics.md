@@ -33,13 +33,13 @@ To download the example, clone the `grpc` repository by running the following
 command:
 
 ```sh
-$ git clone -b {{< param grpc_vers.core >}} --depth 1 --shallow-submodules https://github.com/grpc/grpc
+git clone -b {{< param grpc_vers.core >}} --depth 1 --shallow-submodules https://github.com/grpc/grpc
 ```
 
 Then change your current directory to `examples/python/route_guide` in the repository:
 
 ```sh
-$ cd grpc/examples/python/route_guide
+cd grpc/examples/python/route_guide
 ```
 
 You also should have the relevant tools installed to generate the server and
@@ -139,13 +139,13 @@ service definition.
 First, install the grpcio-tools package:
 
 ```sh
-$ pip install grpcio-tools
+pip install grpcio-tools
 ```
 
 Use the following command to generate the Python code:
 
 ```sh
-$ python -m grpc_tools.protoc -I../../protos --python_out=. --pyi_out=. --grpc_python_out=. ../../protos/route_guide.proto
+python -m grpc_tools.protoc -I../../protos --python_out=. --pyi_out=. --grpc_python_out=. ../../protos/route_guide.proto
 ```
 
 Note that as we've already provided a version of the generated code in the
@@ -165,6 +165,31 @@ than creates a new one. The generated code files are called
 {{% alert title="Note" color="info" %}}
 The `2` in pb2 indicates that the generated code is following Protocol Buffers Python API version 2. Version 1 is obsolete. It has no relation to the Protocol Buffers Language version, which is the one indicated by `syntax = "proto3"` or `syntax = "proto2"` in a `.proto` file.
 {{% /alert %}}
+
+#### Generating gRPC interfaces with custom package path
+
+To generate gRPC client interfaces with a custom package path, you can use the `-I` parameter along with the `grpc_tools.protoc` command. This approach allows you to specify a custom package name for the generated files.
+
+Here's an example command to generate the gRPC client interfaces with a custom package path:
+
+```sh
+python -m grpc_tools.protoc -Igrpc/example/custom/path=../../protos \
+  --python_out=. --grpc_python_out=. \
+  ../../protos/route_guide.proto
+```
+
+The generated files will be placed in the `./grpc/example/custom/path/` directory:
+
+- `./grpc/example/custom/path/route_guide_pb2.py`
+- `./grpc/example/custom/path/route_guide_pb2_grpc.py`
+
+With this setup, the generated `route_guide_pb2_grpc.py` file will correctly import the protobuf definitions using the custom package structure, as shown below:
+
+```python
+import grpc.example.custom.path.route_guide_pb2 as route_guide_pb2
+```
+
+By following this approach, you can ensure that the files will call each other correctly with respect to the specified package path. This method allows you to maintain a custom package structure for your gRPC client interfaces.
 
 ### Creating the server {#server}
 
@@ -241,7 +266,7 @@ method yields zero or more responses.
 ##### Request-streaming RPC
 
 The request-streaming method `RecordRoute` uses an
-[iterator](https://docs.python.org/2/library/stdtypes.html#iterator-types) of
+[iterator](https://docs.python.org/3/library/stdtypes.html#iterator-types) of
 request values and returns a single response value.
 
 ```python
@@ -389,11 +414,11 @@ for received_route_note in stub.RouteChat(sent_route_note_iterator):
 Run the server:
 
 ```sh
-$ python route_guide_server.py
+python route_guide_server.py
 ```
 
 From a different terminal, run the client:
 
 ```sh
-$ python route_guide_client.py
+python route_guide_client.py
 ```

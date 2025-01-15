@@ -12,6 +12,8 @@ HTTP/2 PING-based keepalives are a way to keep an HTTP/2 connection alive even w
   There is a related but separate concern called [Health Checking]. Health checking allows a server to signal whether a *service* is healthy while keepalive is only about the *connection*.
 {{% /alert %}}
 
+{{< youtube id="yPNHn6lXndo" class="youtube-video" title="gRPC Keepalive" >}}
+
 ### Background
 
 [TCP keepalive] is a well-known method of maintaining connections and detecting broken connections. When TCP keepalive was enabled, either side of the connection can send redundant packets. Once ACKed by the other side, the connection will be considered as good. If no ACK is received after repeated attempts, the connection is deemed broken.
@@ -44,7 +46,7 @@ gRPC HTTP/2 keepalives can be useful in a variety of situations, including but n
 
 | Options | Availability | Description | Client Default | Server Default |
 |---|---|---|---|---|
-| `KEEPALIVE_TIME` | Client and Server | The interval in milliseconds between PING frames. | INT_MAX (Disabled) | 27200000 (2 hours) |
+| `KEEPALIVE_TIME` | Client and Server | The interval in milliseconds between PING frames. | INT_MAX (Disabled) | 7200000 (2 hours) |
 | `KEEPALIVE_TIMEOUT` | Client and Server | The timeout in milliseconds for a PING frame to be acknowledged. If sender does not receive an acknowledgment within this time, it will close the connection. | 20000 (20 seconds) | 20000 (20 seconds) |
 | `KEEPALIVE_WITHOUT_CALLS` | Client | Is it permissible to send keepalive pings from the client without any outstanding streams. | 0 (false) | N/A |
 | `PERMIT_KEEPALIVE_WITHOUT_CALLS` | Server | Is it permissible to send keepalive pings from the client without any outstanding streams. | N/A | 0 (false) |
